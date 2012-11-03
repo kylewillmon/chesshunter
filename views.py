@@ -1,5 +1,6 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import *
+from pyramid.security import remember, authenticated_userid
 
 from models import Game, User, DBSession
 
@@ -25,16 +26,22 @@ def view_game(request):
 @view_config(route_name='login', renderer='templates/login.pt')
 def login(request):
     session = DBSession()
+    logged_in = authenticated_userid(request)
     message = 'Please log in'
+    if logged_in:
+        user = session.query(User).filter(User.id==logged_in).first()
+        if user:
+            message = 'Welcome %s' % user.username
     if 'submit' in request.POST:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
         user = session.query(User).filter(User.username==username).first()
         if user:
             if user.check_password(password):
-                message = "Success"
+                headers = remember(request, user.id)
+                raise HTTPFound(location='/', headers=headers)
             else:
-                message = 'Fail'
+                message = 'Invalid password'
         else:
             message = 'Invalid user'
     return {'message': message}

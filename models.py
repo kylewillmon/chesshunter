@@ -3,21 +3,36 @@
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+import hashlib
 
 Base = declarative_base()
 DBSession = sessionmaker()
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String)
+    password = Column(String)
+
+    __table_args__ = ( UniqueConstraint('username'), )
+
+    def check_password(self, password):
+        salt = self.password[:5]
+        sha_hash = (salt + hashlib.sha1(salt + password).hexdigest())
+        return (sha_hash == self.password)
 
 class Game(Base):
     __tablename__ = "games"
 
     id = Column(Integer, primary_key=True)
-    white = Column(String)
-    black = Column(String)
+    white_id = Column(Integer, ForeignKey("users.id"))
+    black_id = Column(Integer, ForeignKey("users.id"))
 
     def __json__(self):
         return {'id': self.id,
-                'white': self.white,
-                'black': self.black,
+                'white': self.white.username,
+                'black': self.black.username,
                 'moves': [x.__json__() for x in self.moves]}
 
 class Move(Base):

@@ -1,6 +1,6 @@
 from wsgiref.simple_server import make_server
 
-from sqlalchemy import create_engine
+from sqlalchemy import engine_from_config
 
 import models
 
@@ -17,7 +17,7 @@ class RootFactory(object):
         pass
 
 def main(global_config, **settings):
-    engine = create_engine('sqlite:///chesshunter.db')
+    engine = engine_from_config(settings)
     models.initialize_sql(engine)
 
     authn_policy = AuthTktAuthenticationPolicy(
@@ -36,7 +36,9 @@ def main(global_config, **settings):
 
 if __name__ == '__main__':
     settings = {
-        'auth.secret': 'chsecret'
+        'auth.secret': 'chsecret',
+        'sqlalchemy.url': 'sqlite:///chesshunter.db',
+        'sqlalchemy.echo': True,
     }
     app = main({}, **settings)
     server = make_server('0.0.0.0', 8080, app)

@@ -23,15 +23,17 @@ def view_game(request):
     return {'status': 'success',
             'game': game.__json__()}
 
+@view_config(route_name='home', renderer='templates/home.pt')
+def home_view(request):
+    return {}
+
 @view_config(route_name='login', renderer='templates/login.pt')
 def login(request):
     session = DBSession()
     logged_in = authenticated_userid(request)
     message = 'Please log in'
     if logged_in:
-        user = session.query(User).filter(User.id==logged_in).first()
-        if user:
-            message = 'Welcome %s' % user.username
+        raise HTTPFound(location=request.route_url('home'))
     if 'submit' in request.POST:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')

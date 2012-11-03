@@ -29,7 +29,8 @@ def main(global_config, **settings):
             root_factory=RootFactory)
     config.add_route('new_game', '/new')
     config.add_route('view_game', '/view/{game_id}')
-    config.add_route('login', '/')
+    config.add_route('home', '/')
+    config.add_route('login', '/login')
     config.scan("views")
     app = config.make_wsgi_app()
     return app

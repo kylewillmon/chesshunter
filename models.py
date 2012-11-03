@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 from sqlalchemy import *
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+DBSession = sessionmaker()
 
 class Game(Base):
     __tablename__ = "games"
@@ -12,6 +13,12 @@ class Game(Base):
     id = Column(Integer, primary_key=True)
     white = Column(String)
     black = Column(String)
+
+    def __json__(self):
+        return {'id': self.id,
+                'white': self.white,
+                'black': self.black,
+                'moves': [x.__json__() for x in self.moves]}
 
 class Move(Base):
     __tablename__ = "moves"
@@ -27,4 +34,6 @@ class Move(Base):
     __table_args__ = ( UniqueConstraint('game_id', 'move_num'), )
 
 def initialize_sql(engine):
+    DBSession.configure(bind=engine)
+    Base.metadata.bind = engine
     Base.metadata.create_all(engine)

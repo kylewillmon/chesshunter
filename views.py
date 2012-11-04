@@ -14,7 +14,7 @@ class Chesshunter(object):
         self.logged_in = authenticated_userid(request)
 
     @view_config(route_name="new_game", renderer='json', permission="edit")
-    def new_game(self):
+    def new_game_view(self):
         game = Game(white="kylewillmon", black="sheerluck")
         self.session.add(game)
         self.session.commit()
@@ -22,7 +22,7 @@ class Chesshunter(object):
                 'game': game.__json__()}
 
     @view_config(route_name="view_game", renderer='json', permission="view")
-    def view_game(self):
+    def view_game_view(self):
         game_id = self.request.matchdict['game_id']
         game = self.session.query(Game).filter(Game.id==game_id).first()
         if not game:
@@ -35,7 +35,7 @@ class Chesshunter(object):
         return {}
 
     @view_config(route_name='login', renderer='templates/login.pt')
-    def login(self):
+    def login_view(self):
         message = 'Please log in'
         if self.logged_in:
             url = self.request.route_url('home')
@@ -56,7 +56,7 @@ class Chesshunter(object):
         return {'message': message}
 
     @view_config(route_name='logout')
-    def logout(self):
+    def logout_view(self):
             headers = forget(self.request)
             url = self.request.route_url('home')
             raise HTTPFound(location=url, headers=headers)

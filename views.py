@@ -33,7 +33,18 @@ class Chesshunter(object):
 
     @view_config(route_name='home', renderer='home.mak')
     def home_view(self):
-        return {}
+        if not self.logged_in:
+            url = self.request.route_url('login')
+            raise HTTPFound(location=url)
+        user = (self.session.query(User)
+                .filter(User.id==self.logged_in).first())
+        if not user:
+            # Perhaps this is rude... but it only happens to deleted users
+            url = self.request.route_url('logout')
+            raise HTTPFound(location=url)
+        all_users = self.session.query(User).all()
+        return {'user': user,
+                'all_users': all_users}
 
     @view_config(route_name='login', renderer='login.mak')
     def login_view(self):

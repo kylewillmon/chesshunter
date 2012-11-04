@@ -56,7 +56,7 @@ class Chesshunter(object):
         return {'message': message}
 
     @view_config(route_name='logout')
-    def login(self):
+    def logout(self):
             headers = forget(self.request)
             url = self.request.route_url('home')
             raise HTTPFound(location=url, headers=headers)

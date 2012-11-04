@@ -58,9 +58,9 @@ class Chesshunter(object):
 
     @view_config(route_name='logout')
     def logout_view(self):
-            headers = forget(self.request)
-            url = self.request.route_url('home')
-            raise HTTPFound(location=url, headers=headers)
+        headers = forget(self.request)
+        url = self.request.route_url('home')
+        raise HTTPFound(location=url, headers=headers)
 
     @view_config(route_name='register', renderer='templates/register.pt')
     def register_view(self):

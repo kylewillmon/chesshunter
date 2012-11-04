@@ -4,6 +4,9 @@ from pyramid.security import remember, forget, authenticated_userid
 
 from models import Game, User, DBSession
 
+import logging
+logger = logging.getLogger(__name__)
+
 class Chesshunter(object):
     def __init__(self, request):
         self.request = request

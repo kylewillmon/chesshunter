@@ -1,6 +1,7 @@
 from wsgiref.simple_server import make_server
 
 from sqlalchemy import engine_from_config
+import logging
 
 import models
 
@@ -37,10 +38,11 @@ def main(global_config, **settings):
     return app
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+    logging.getLogger('sqlalchemy').setLevel(logging.INFO)
     settings = {
         'auth.secret': 'chsecret',
         'sqlalchemy.url': 'sqlite:///chesshunter.db',
-        'sqlalchemy.echo': True,
     }
     app = main({}, **settings)
     server = make_server('0.0.0.0', 8080, app)

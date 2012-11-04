@@ -31,6 +31,7 @@ def main(global_config, **settings):
     config.add_route('view_game', '/view/{game_id}')
     config.add_route('home', '/')
     config.add_route('login', '/login')
+    config.add_route('logout', '/logout')
     config.scan("views")
     app = config.make_wsgi_app()
     return app

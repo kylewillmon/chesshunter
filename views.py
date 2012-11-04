@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import *
-from pyramid.security import remember, authenticated_userid
+from pyramid.security import remember, forget, authenticated_userid
 
 from models import Game, User, DBSession
 
@@ -47,3 +47,9 @@ def login(request):
         else:
             message = 'Invalid user'
     return {'message': message}
+
+@view_config(route_name='logout')
+def login(request):
+        headers = forget(request)
+        loc = request.route_url('home')
+        raise HTTPFound(location=loc, headers=headers)

@@ -31,11 +31,11 @@ class Chesshunter(object):
         return {'status': 'success',
                 'game': game.__json__()}
 
-    @view_config(route_name='home', renderer='templates/home.pt')
+    @view_config(route_name='home', renderer='home.mak')
     def home_view(self):
         return {}
 
-    @view_config(route_name='login', renderer='templates/login.pt')
+    @view_config(route_name='login', renderer='login.mak')
     def login_view(self):
         message = 'Please log in'
         if self.logged_in:
@@ -63,7 +63,7 @@ class Chesshunter(object):
         url = self.request.route_url('home')
         raise HTTPFound(location=url, headers=headers)
 
-    @view_config(route_name='register', renderer='templates/register.pt')
+    @view_config(route_name='register', renderer='register.mak')
     def register_view(self):
         error = None
         message = None

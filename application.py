@@ -44,6 +44,7 @@ if __name__ == '__main__':
     settings = {
         'auth.secret': 'chsecret',
         'sqlalchemy.url': 'sqlite:///chesshunter.db',
+        'mako.directories': 'templates',
     }
     app = main({}, **settings)
     server = make_server('0.0.0.0', 8080, app)

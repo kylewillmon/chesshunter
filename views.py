@@ -3,6 +3,7 @@ from pyramid.httpexceptions import *
 from pyramid.security import remember, forget, authenticated_userid
 
 from models import Game, User, DBSession
+import re
 
 import logging
 logger = logging.getLogger(__name__)
@@ -60,3 +61,25 @@ class Chesshunter(object):
             headers = forget(self.request)
             url = self.request.route_url('home')
             raise HTTPFound(location=url, headers=headers)
+
+    @view_config(route_name='register', renderer='templates/register.pt')
+    def register_view(self):
+        error = None
+        message = None
+        if 'submit' in self.request.POST:
+            username = self.request.POST.get('username')
+            password = self.request.POST.get('password')
+            if not username or not re.match('^\w+$', username):
+                error = 'Invalid username'
+            else:
+                user = (self.session.query(User)
+                        .filter(User.username==username).first())
+                if user:
+                    error = 'Username in use'
+                else:
+                    user = User(username, password)
+                    self.session.add(user)
+                    self.session.commit()
+                    message = 'User "%s" successfully created' % username
+        return {'error': error,
+                'message': message}

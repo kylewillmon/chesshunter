@@ -3,7 +3,7 @@
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-import hashlib
+import bcrypt
 
 Base = declarative_base()
 DBSession = sessionmaker()
@@ -17,10 +17,13 @@ class User(Base):
 
     __table_args__ = ( UniqueConstraint('username'), )
 
+    def __init__(self, username, password):
+        self.username = username
+        self.password = bcrypt.hashpw(password, bcrypt.gensalt())
+
     def check_password(self, password):
-        salt = self.password[:5]
-        sha_hash = (salt + hashlib.sha1(salt + password).hexdigest())
-        return (sha_hash == self.password)
+        hashed = bcrypt.hashpw(password, self.password)
+        return (hashed == self.password)
 
 class Game(Base):
     __tablename__ = "games"

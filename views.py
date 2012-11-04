@@ -49,7 +49,8 @@ class Chesshunter(object):
             if user:
                 if user.check_password(password):
                     headers = remember(self.request, user.id)
-                    raise HTTPFound(location='/', headers=headers)
+                    url = self.request.route_url('home')
+                    raise HTTPFound(location=url, headers=headers)
                 else:
                     message = 'Invalid password'
             else:

@@ -28,8 +28,8 @@ def main(global_config, **settings):
             authentication_policy=authn_policy,
             authorization_policy=authz_policy,
             root_factory=RootFactory)
-    config.add_route('new_game', '/new')
-    config.add_route('view_game', '/view/{game_id}')
+    config.add_route('new_game', '/api/new')
+    config.add_route('view_game', '/api/view/{game_id}')
     config.add_route('home', '/')
     config.add_route('register', '/register')
     config.add_route('login', '/login')

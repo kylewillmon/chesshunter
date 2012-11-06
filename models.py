@@ -21,6 +21,10 @@ class User(Base):
         self.username = username
         self.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
+    def __json__(self):
+        return {'id': self.id,
+                'username': self.username}
+
     def check_password(self, password):
         hashed = bcrypt.hashpw(password, self.password)
         return (hashed == self.password)
@@ -30,12 +34,14 @@ class Game(Base):
 
     id = Column(Integer, primary_key=True)
     white_id = Column(Integer, ForeignKey("users.id"))
+    white = relationship("User", primaryjoin='Game.white_id==User.id')
     black_id = Column(Integer, ForeignKey("users.id"))
+    black = relationship("User", primaryjoin='Game.black_id==User.id')
 
     def __json__(self):
         return {'id': self.id,
-                'white': self.white.username,
-                'black': self.black.username,
+                'white': self.white.__json__(),
+                'black': self.black.__json__(),
                 'moves': [x.__json__() for x in self.moves]}
 
 class Move(Base):

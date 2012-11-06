@@ -4,6 +4,7 @@ from pyramid.security import remember, forget, authenticated_userid
 
 from models import Game, User, DBSession
 import re
+from sqlalchemy import or_
 
 import logging
 logger = logging.getLogger(__name__)
@@ -14,13 +15,21 @@ class Chesshunter(object):
         self.session = DBSession()
         self.logged_in = authenticated_userid(request)
 
-    @view_config(route_name="new_game", renderer='json', permission="edit")
+    @view_config(route_name="new_game", renderer='json',
+            permission="edit", request_method="POST")
     def new_game_view(self):
-        game = Game(white="kylewillmon", black="sheerluck")
+        white = self.request.POST.get("white")
+        black = self.request.POST.get("black")
+        if not (white and
+                black and
+                self.session.query(User)
+                    .filter(or_(User.id==white, User.id==black))
+                    .count() == 2):
+            raise HTTPBadRequest
+        game = Game(white_id=white, black_id=black)
         self.session.add(game)
         self.session.commit()
-        return {'status': 'success',
-                'game': game.__json__()}
+        return game.__json__()
 
     @view_config(route_name="view_game", renderer='json', permission="view")
     def view_game_view(self):
@@ -28,8 +37,7 @@ class Chesshunter(object):
         game = self.session.query(Game).filter(Game.id==game_id).first()
         if not game:
             raise HTTPNotFound
-        return {'status': 'success',
-                'game': game.__json__()}
+        return game.__json__()
 
     @view_config(route_name='home', renderer='home.mak')
     def home_view(self):

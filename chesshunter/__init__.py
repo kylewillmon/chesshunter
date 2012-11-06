@@ -1,14 +1,10 @@
-from wsgiref.simple_server import make_server
-
-from sqlalchemy import engine_from_config
-import logging
-
-import models
-
 from pyramid.config import Configurator
 from pyramid.security import Allow, Authenticated, Everyone
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
+import models
+from sqlalchemy import engine_from_config
+import views
 
 class RootFactory(object):
     __acl__ = [ (Allow, Everyone, 'view'),
@@ -34,18 +30,6 @@ def main(global_config, **settings):
     config.add_route('register', '/register')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
-    config.scan("views")
+    config.scan(views)
     app = config.make_wsgi_app()
     return app
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    logging.getLogger('sqlalchemy').setLevel(logging.INFO)
-    settings = {
-        'auth.secret': 'chsecret',
-        'sqlalchemy.url': 'sqlite:///chesshunter.db',
-        'mako.directories': 'templates',
-    }
-    app = main({}, **settings)
-    server = make_server('0.0.0.0', 8080, app)
-    server.serve_forever()

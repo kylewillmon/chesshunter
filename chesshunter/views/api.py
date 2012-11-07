@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import *
-from models import Game, User, DBSession
+from chesshunter.models import Game, User, DBSession
 from sqlalchemy import or_
 
 class api_views(object):

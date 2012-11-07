@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import *
 from pyramid.security import remember, forget, authenticated_userid
-from models import User, DBSession
+from chesshunter.models import User, DBSession
 import re
 
 @view_config(route_name='logout')

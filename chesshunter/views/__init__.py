@@ -2,10 +2,10 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import *
 from pyramid.security import authenticated_userid
 
-from models import User, DBSession
+from chesshunter.models import User, DBSession
 
-from user_views import *
-from api_views import *
+from user import *
+from api import *
 
 class main_views(object):
     def __init__(self, request):

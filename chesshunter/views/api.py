@@ -8,7 +8,7 @@ class api_views(object):
         self.request = request
         self.session = DBSession()
 
-    @view_config(route_name="new_game", renderer='json',
+    @view_config(route_name="games", renderer='json',
             permission="edit", request_method="POST")
     def new_game_view(self):
         white = self.request.POST.get("white")

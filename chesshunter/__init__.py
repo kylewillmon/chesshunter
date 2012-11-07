@@ -24,8 +24,12 @@ def main(global_config, **settings):
             authentication_policy=authn_policy,
             authorization_policy=authz_policy,
             root_factory=RootFactory)
-    config.add_route('new_game', '/api/new')
-    config.add_route('view_game', '/api/view/{game_id}')
+    config.add_route('games', '/api/games')
+    config.add_route('view_game', '/api/games/{game_id}')
+    config.add_route('make_move', '/api/games/{game_id}/move')
+    config.add_route('resign', '/api/games/{game_id}/resign')
+    config.add_route('offer_draw', '/api/games/{game_id}/offerdraw')
+    config.add_route('accept_draw', '/api/games/{game_id}/acceptdraw')
     config.add_route('home', '/')
     config.add_route('register', '/register')
     config.add_route('login', '/login')

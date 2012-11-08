@@ -58,6 +58,9 @@ class Move(Base):
     src = Column(String)
     dst = Column(String)
 
+    def __json__(self):
+        return [self.src, self.dst]
+
     __table_args__ = ( UniqueConstraint('game_id', 'move_num'), )
 
 def initialize_sql(engine):

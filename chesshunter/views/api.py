@@ -2,6 +2,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import *
 from chesshunter.models import Game, User, DBSession
 from sqlalchemy import or_
+import chess
 
 class api_views(object):
     def __init__(self, request):
@@ -19,7 +20,8 @@ class api_views(object):
                     .filter(or_(User.id==white, User.id==black))
                     .count() == 2):
             raise HTTPBadRequest
-        game = Game(white_id=white, black_id=black)
+        game = Game(board=chess.Game().fen(),
+                white_id=white, black_id=black)
         self.session.add(game)
         self.session.commit()
         return game.__json__()

@@ -34,6 +34,7 @@ class Game(Base):
     __tablename__ = "games"
 
     id = Column(Integer, primary_key=True)
+    board = Column(String)
     white_id = Column(Integer, ForeignKey("users.id"))
     white = relationship("User", primaryjoin='Game.white_id==User.id')
     black_id = Column(Integer, ForeignKey("users.id"))
@@ -43,6 +44,7 @@ class Game(Base):
         return {'id': self.id,
                 'white': self.white.__json__(),
                 'black': self.black.__json__(),
+                'board': self.board,
                 'moves': [x.__json__() for x in self.moves]}
 
 class Move(Base):

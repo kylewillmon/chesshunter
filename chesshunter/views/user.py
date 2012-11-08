@@ -10,6 +10,11 @@ def logout_view(request):
     url = request.route_url('home')
     raise HTTPFound(location=url, headers=headers)
 
+@view_config(route_name='register', renderer='register.mak',
+        request_method="GET")
+def register_get_view(self):
+    return dict(error="", message="")
+
 class user_views(object):
     def __init__(self, request):
         self.request = request
@@ -38,19 +43,22 @@ class user_views(object):
                 message = 'Invalid user'
         return {'message': message}
 
-    @view_config(route_name='register', renderer='register.mak')
-    def register_view(self):
-        error = None
-        message = None
-        if 'submit' in self.request.POST:
-            username = self.request.POST.get('username')
-            password = self.request.POST.get('password')
-            if not username or not re.match('^\w+$', username):
-                error = 'Invalid username'
+    @view_config(route_name='register', renderer='register.mak',
+            request_method="POST")
+    def register_post_vies(self):
+        error, message = "", ""
+        username = self.request.POST.get('username')
+        password = self.request.POST.get('password')
+        if not username or not re.match('^\w+$', username):
+            error = 'Invalid username'
+        else:
+            user = (self.session.query(User)
+                    .filter(User.username==username).first())
+            if user:
+                error = 'Username in use'
             else:
-                user = (self.session.query(User)
-                        .filter(User.username==username).first())
-                if user:
-                    error = 'Username in use'
-                else:
-                    user = User(username, password)
+                user = User.new(username, password)
+                self.session.add(user)
+                self.session.commit()
+                message = 'User "%s" successfully created' % username
+        return  dict(error=error,message=message)

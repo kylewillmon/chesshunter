@@ -17,9 +17,10 @@ class User(Base):
 
     __table_args__ = ( UniqueConstraint('username'), )
 
-    def __init__(self, username, password):
-        self.username = username
-        self.password = bcrypt.hashpw(password, bcrypt.gensalt())
+    @staticmethod
+    def new(username, password):
+        return User(username=username,
+                password=bcrypt.hashpw(password, bcrypt.gensalt()))
 
     def __json__(self):
         return {'id': self.id,

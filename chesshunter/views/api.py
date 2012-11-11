@@ -10,6 +10,11 @@ class api_views(object):
         self.session = DBSession()
 
     @view_config(route_name="games", renderer='json',
+            permission="view", request_method="GET")
+    def list_games_view(self):
+        return [g.__json__() for g in self.session.query(Game).all()]
+
+    @view_config(route_name="games", renderer='json',
             permission="edit", request_method="POST")
     def new_game_view(self):
         white = self.request.POST.get("white")

@@ -4,6 +4,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import bcrypt
+import chess
 
 Base = declarative_base()
 DBSession = sessionmaker()
@@ -39,12 +40,36 @@ class Game(Base):
     white = relationship("User", primaryjoin='Game.white_id==User.id')
     black_id = Column(Integer, ForeignKey("users.id"))
     black = relationship("User", primaryjoin='Game.black_id==User.id')
+    state = Column(Enum('ongoing', 'draw', 'white', 'black'),
+            default='ongoing')
+
+    def is_over(self):
+        return self.state != 'ongoing'
+
+    def winner(self):
+        if self.state in ['white', 'black']:
+            return self.state
+        else:
+            return None
+
+    def move(self, src, dst):
+        g = chess.Game(fen=self.board)
+        move = chess.BasicMove(src, dst)
+        g.validate_move(move)
+        move_num = (2 * g.fullmove) + (1 if g.active == 'b' else 0)
+        self.moves.append(Move(
+            move_num=move_num,
+            game_id=self.id,
+            src=src,
+            dst=dst))
+        self.board = g.move(move).fen()
 
     def __json__(self):
         return {'id': self.id,
                 'white': self.white.__json__(),
                 'black': self.black.__json__(),
                 'board': self.board,
+                'state': self.state,
                 'moves': [x.__json__() for x in self.moves]}
 
 class Move(Base):

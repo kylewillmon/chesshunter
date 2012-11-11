@@ -63,18 +63,9 @@ class api_views(object):
         game = self.session.query(Game).filter(Game.id==game_id).first()
         if not game:
             raise HTTPNotFound
-        g = chess.Game(fen=game.board)
         try:
-            move = chess.BasicMove(src, dst)
-            g.validate_move(move)
+            game.move(src, dst)
         except:
             raise HTTPBadRequest
-        move_num = g.fullmove + (1 if g.active == 'b' else 0)
-        game.moves.append(Move(
-            move_num=move_num,
-            game_id=game_id,
-            src=src,
-            dst=dst))
-        game.board = g.move(move).fen()
         self.session.commit()
         return game.__json__()

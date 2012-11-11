@@ -9,6 +9,20 @@ class api_views(object):
         self.request = request
         self.session = DBSession()
 
+    @view_config(route_name="users", renderer='json',
+            permission="view", request_method="GET")
+    def list_users_view(self):
+        return [u.__json__() for u in self.session.query(User).all()]
+
+    @view_config(route_name="view_user", renderer='json',
+            permission="view", request_method="GET")
+    def view_user_view(self):
+        user_id = self.request.matchdict['user_id']
+        user = self.session.query(User).filter(User.id==user_id).first()
+        if not user:
+            raise HTTPNotFound
+        return user.__json__()
+
     @view_config(route_name="games", renderer='json',
             permission="view", request_method="GET")
     def list_games_view(self):

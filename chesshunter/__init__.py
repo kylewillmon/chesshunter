@@ -30,6 +30,8 @@ def main(global_config, **settings):
     config.add_route('resign', '/api/games/{game_id}/resign')
     config.add_route('offer_draw', '/api/games/{game_id}/offerdraw')
     config.add_route('accept_draw', '/api/games/{game_id}/acceptdraw')
+    config.add_route('users', '/api/users')
+    config.add_route('view_user', '/api/users/{user_id}')
     config.add_route('home', '/')
     config.add_route('register', '/register')
     config.add_route('login', '/login')

@@ -64,6 +64,15 @@ class Game(Base):
             dst=dst))
         self.board = g.move(move).fen()
 
+    def turn_count(self):
+        return (len(self.moves)/2) + 1
+
+    def active_player(self):
+        if (len(self.moves) % 2) == 0:
+            return self.white
+        else:
+            return self.black
+
     def __json__(self):
         return {'id': self.id,
                 'white': self.white.__json__(),

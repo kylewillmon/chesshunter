@@ -1,8 +1,9 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import *
 from pyramid.security import authenticated_userid
+from sqlalchemy import or_
 
-from chesshunter.models import User, DBSession
+from chesshunter.models import User, DBSession, Game
 
 from user import *
 from api import *
@@ -24,6 +25,11 @@ class main_views(object):
             # Perhaps this is rude... but it only happens to deleted users
             url = self.request.route_url('logout')
             raise HTTPFound(location=url)
-        all_users = self.session.query(User).all()
+        games = (self.session.query(Game)
+                .filter(Game.state=='ongoing')
+                .filter(
+                    or_(User.id==Game.white_id,
+                        User.id==Game.black_id))
+                .all())
         return {'user': user,
-                'all_users': all_users}
+                'games': games}

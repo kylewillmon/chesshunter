@@ -5,6 +5,9 @@ from pyramid.authorization import ACLAuthorizationPolicy
 import models
 from sqlalchemy import engine_from_config
 import views
+import os.path
+
+here = os.path.dirname(os.path.realpath(__file__))
 
 class RootFactory(object):
     __acl__ = [ (Allow, Everyone, 'view'),
@@ -36,6 +39,8 @@ def main(global_config, **settings):
     config.add_route('register', '/register')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
+    config.add_static_view(name='static',
+            path=os.path.join(here, 'static'))
     config.scan(views)
     app = config.make_wsgi_app()
     return app

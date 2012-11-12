@@ -13,8 +13,8 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    username = Column(String)
-    password = Column(String)
+    username = Column(String, nullable=False)
+    password = Column(String, nullable=False)
 
     __table_args__ = ( UniqueConstraint('username'), )
 
@@ -35,13 +35,14 @@ class Game(Base):
     __tablename__ = "games"
 
     id = Column(Integer, primary_key=True)
-    board = Column(String)
-    white_id = Column(Integer, ForeignKey("users.id"))
+    board = Column(String, nullable=False)
+    white_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     white = relationship("User", primaryjoin='Game.white_id==User.id')
-    black_id = Column(Integer, ForeignKey("users.id"))
+    black_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     black = relationship("User", primaryjoin='Game.black_id==User.id')
     state = Column(Enum('ongoing', 'draw', 'white', 'black'),
-            default='ongoing')
+            default='ongoing',
+            nullable=False)
 
     def is_over(self):
         return self.state != 'ongoing'
@@ -85,12 +86,12 @@ class Move(Base):
     __tablename__ = "moves"
 
     id = Column(Integer, primary_key=True)
-    move_num = Column(Integer)
-    game_id = Column(Integer, ForeignKey("games.id"))
+    move_num = Column(Integer, nullable=False)
+    game_id = Column(Integer, ForeignKey("games.id"), nullable=False)
     game = relationship('Game', backref=backref('moves',
                            order_by=move_num))
-    src = Column(String)
-    dst = Column(String)
+    src = Column(String, nullable=False)
+    dst = Column(String, nullable=False)
 
     def __json__(self):
         return [self.src, self.dst]

@@ -21,26 +21,31 @@ class user_views(object):
         self.session = DBSession()
         self.logged_in = authenticated_userid(request)
 
-    @view_config(route_name='login', renderer='login.mak')
-    def login_view(self):
-        message = ''
+    @view_config(route_name='login', renderer='login.mak',
+            request_method="GET")
+    def login_get_view(self):
         if self.logged_in:
             url = self.request.route_url('home')
             raise HTTPFound(location=url)
-        if 'submit' in self.request.POST:
-            username = self.request.POST.get('username', '')
-            password = self.request.POST.get('password', '')
-            user = (self.session.query(User)
-                    .filter(User.username==username).first())
-            if user:
-                if user.check_password(password):
-                    headers = remember(self.request, user.id)
-                    url = self.request.route_url('home')
-                    raise HTTPFound(location=url, headers=headers)
-                else:
-                    message = 'Invalid password'
+        return {'logged_in': False, 'message': ''}
+
+    @view_config(route_name='login', renderer='login.mak',
+            request_method="POST")
+    def login_post_view(self):
+        message = ''
+        username = self.request.POST.get('username', '')
+        password = self.request.POST.get('password', '')
+        user = (self.session.query(User)
+                .filter(User.username==username).first())
+        if user:
+            if user.check_password(password):
+                headers = remember(self.request, user.id)
+                url = self.request.route_url('home')
+                raise HTTPFound(location=url, headers=headers)
             else:
-                message = 'Invalid user'
+                message = 'Invalid password'
+        else:
+            message = 'Invalid user'
         return {'logged_in': False, 'message': message}
 
     @view_config(route_name='register', renderer='register.mak',

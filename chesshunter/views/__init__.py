@@ -31,5 +31,6 @@ class main_views(object):
                     or_(User.id==Game.white_id,
                         User.id==Game.black_id))
                 .all())
-        return {'user': user,
+        return {'logged_in': True,
+                'user': user,
                 'games': games}

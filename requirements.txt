@@ -1,0 +1,4 @@
+-e git://github.com/kylewillmon/chess.git#egg=chess
+py-bcrypt
+Pyramid
+sqlalchemy

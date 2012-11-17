@@ -4,3 +4,15 @@ MIT License.
 The goal of Chesshunter is to create an Open Source website for chess
 enthusiasts. It is my belief that the chess community could greatly benefit
 from the use and development of Free and Open Source Software.
+
+To try it out in a virtualenv protected environment, simply install virtualenv
+and do the following:
+
+  virtualenv ENV
+  source ENV/bin/activate
+  pip install -r requirements.txt
+  python app.py
+
+Then go in a web browser to http://localhost:8080/ and enjoy.
+
+Patches and other help with development are always appreciated.

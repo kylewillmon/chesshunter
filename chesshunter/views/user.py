@@ -23,7 +23,7 @@ class user_views(object):
 
     @view_config(route_name='login', renderer='login.mak')
     def login_view(self):
-        message = 'Please log in'
+        message = ''
         if self.logged_in:
             url = self.request.route_url('home')
             raise HTTPFound(location=url)
@@ -41,7 +41,7 @@ class user_views(object):
                     message = 'Invalid password'
             else:
                 message = 'Invalid user'
-        return {'message': message}
+        return {'logged_in': False, 'message': message}
 
     @view_config(route_name='register', renderer='register.mak',
             request_method="POST")

@@ -1,27 +1,39 @@
- <!DOCTYPE html>
- <html>
-     <head>
-         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-         <title>chesshunter</title>
-     </head>
-     <body>
-         <div>Error: ${error}</div>
-         <div>Message: ${message}</div>
-         <h1 class="title">Welcome to chesshunter</h1>
-         <form method="POST" action="#">
-             <table>
-                 <tr>
-                     <td><label for="username">Username:</label></td>
-                     <td><input name="username" id="username" type="text" /></td>
-                 </tr>
-                 <tr>
-                     <td><label for="password">Password:</label></td>
-                     <td><input name="password" id="password" type="password" /></td>
-                 </tr>
-                 <tr>
-                     <td colspan="2"><input name="submit" type="submit" /></td>
-                 </tr>
-             </table>
-         </form>
-     </body>
- </html>
+<%inherit file="base.mak"/>
+<div class="container">
+    <div class="row">
+        <div class="span12">
+            % if message != '':
+            <div class="alert">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                ${message}
+            </div>
+            % endif
+            % if error != '':
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                ${error}
+            </div>
+            % endif
+            <h1 class="title">User Registration</h1>
+            <form class="form-horizontal" method="POST" action="#">
+                <div class="control-group">
+                    <label class="control-label" for="inputUsername">Username</label>
+                    <div class="controls">
+                        <input type="text" name="username" id="inputUsername" placeholder="Username">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputPassword">Password</label>
+                    <div class="controls">
+                        <input type="password" name="password" id="inputPassword" placeholder="Password">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" name="submit" class="btn">Sign in</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

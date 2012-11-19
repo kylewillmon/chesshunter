@@ -40,7 +40,7 @@ class Game(Base):
     white = relationship("User", primaryjoin='Game.white_id==User.id')
     black_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     black = relationship("User", primaryjoin='Game.black_id==User.id')
-    state = Column(Enum('ongoing', 'draw', 'white', 'black'),
+    state = Column(Enum('ongoing', 'draw', 'white', 'black', name="gamestate"),
             default='ongoing',
             nullable=False)
 

@@ -7,7 +7,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     logging.getLogger('sqlalchemy').setLevel(logging.INFO)
     db = os.getenv('HEROKU_POSTGRESQL_VIOLET_URL', 'sqlite:///chesshunter.db')
-    port = os.getenv('PORT', 8080)
+    port = int(os.getenv('PORT', 8080))
     settings = {
         'auth.secret': 'chsecret',
         'sqlalchemy.url': db,
